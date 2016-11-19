@@ -10,7 +10,14 @@ from .serializers import questionSerializer
 
 class questionList(APIView):
 	def get(self,request):
-		ques= question.objects.filter(id=2)
+		ques= question.objects.filter(asked_by=2)
+#		ques=[]
+#		cities=area_of_interest.objects.select_related('user_id').filter(user_id=1)
+#		for city in cities:
+#			ques.append(question.objects.filter(location=city))
+
+#		for q in ques:
+#			print(q)
 		serializer= questionSerializer(ques,many=True)
 		return Response(serializer.data)
 
