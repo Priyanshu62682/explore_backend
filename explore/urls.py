@@ -20,5 +20,5 @@ from backend import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^questions/',views.questionList.as_view())
+    url(r'^questions/(?P<id_input>[0-9]+)/$',views.questionList.as_view())
 ]

@@ -9,16 +9,19 @@ from .serializers import questionSerializer
 # Create your views here.
 
 class questionList(APIView):
-	def get(self,request):
-		ques= question.objects.filter(asked_by=2)
-#		ques=[]
-#		cities=area_of_interest.objects.select_related('user_id').filter(user_id=1)
-#		for city in cities:
-#			ques.append(question.objects.filter(location=city))
+	def get(self,request,id_input):
+#		ques= question.objects.filter(asked_by=2)
+		ques=[]
+		cities=area_of_interest.objects.select_related('user_id').filter(user_id=id_input)
+		for city in cities:
+			q=question.objects.filter(location=city.city)
+			if q:
+				serializer= questionSerializer(q,many=True)
 
-#		for q in ques:
-#			print(q)
-		serializer= questionSerializer(ques,many=True)
+		
+#		ques= question.objects.filter(location="Roorkee")
+		print(ques)
+		
 		return Response(serializer.data)
 
 	def post(self):
