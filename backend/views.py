@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import questionSerializer
+from .serializers import questionSerializer,answerSerializer
 
 # Create your views here.
 
@@ -26,6 +26,16 @@ class questionList(APIView):
 		
 #		ques= question.objects.filter(location="Roorkee")
 		
+		return Response(serializer.data)
+
+	def post(self):
+		pass
+
+
+class answerList(APIView):
+	def get(self,request,question_id):
+		ans=answer.objects.select_related('q_id').filter(q_id=question_id)
+		serializer= answerSerializer(ans,many=True)
 		return Response(serializer.data)
 
 	def post(self):

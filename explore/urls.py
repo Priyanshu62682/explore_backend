@@ -20,5 +20,6 @@ from backend import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^feed/(?P<id_input>[0-9]+)/$',views.questionList.as_view())
+    url(r'^feed/(?P<id_input>[0-9]+)/$',views.questionList.as_view()),
+    url(r'^answer/(?P<question_id>[0-9]+)/$',views.answerList.as_view())
 ]
