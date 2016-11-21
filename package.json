@@ -1,0 +1,23 @@
+{
+  "name": "explore",
+  "version": "1.0.0",
+  "description": "Backend for city guide app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Priyanshu62682/explore_backend.git"
+  },
+  "keywords": [
+    "api",
+    "explore"
+  ],
+  "author": "Priyanshu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Priyanshu62682/explore_backend/issues"
+  },
+  "homepage": "https://github.com/Priyanshu62682/explore_backend#readme"
+}
