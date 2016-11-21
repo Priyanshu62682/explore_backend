@@ -38,4 +38,4 @@ class answer(models.Model):
 	validity=models.IntegerField()
 	answered_by=models.CharField(max_length=100)
 	def __str__(self):
-		return self.answered_by
+	    return self.answered_by
