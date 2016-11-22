@@ -48,7 +48,7 @@ class answerList(APIView):
 		pass
 
 #view for the answers
-class answerList(generics.CreateAPIView):
+class answerPost(generics.CreateAPIView):
     model=answer
     queryset= answer.objects.all()
     serializer_class=answerSerializer

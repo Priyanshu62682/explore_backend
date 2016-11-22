@@ -20,8 +20,7 @@ from backend import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^questions/',views.questionList.as_view()),
-    url(r'^answer/(?P<ans_no>[0-9]{1})/(?P<answer>[a-z]{5})/(?P<valid>[0-9]{1})/(?P<answeredby>[a-z]{5})/(?P<quw>[0-9]{1})/$', views.answerList.as_view()),
+    url(r'^answer/(?P<ans_no>[0-9]{1})/(?P<answer>[a-z]{5})/(?P<valid>[0-9]{1})/(?P<answeredby>[a-z]{5})/(?P<quw>[0-9]{1})/$', views.answerPost.as_view()),
     #url(r'^answer/', views.answerList.as_view()),
     #for questions--> /feed/<user-id>/    (questions related to areas of that user expert+intersted)
     url(r'^feed/(?P<id_input>[0-9]+)/$',views.questionList.as_view()),
