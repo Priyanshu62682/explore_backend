@@ -28,9 +28,9 @@ class question(models.Model):
 	#0 is not answered
 	status=models.IntegerField()	
 	location=models.CharField(max_length=20)
-	#asked_on=models.DateField(auto_now=True, auto_now_add=False)
-	upvotes=models.IntegerField()
-	downvotes=models.IntegerField()
+	#asked_on=models.DateField(auto_now=True, auto_now_add=False,blank=True)
+	upvotes=models.IntegerField(blank=True)
+	downvotes=models.IntegerField(blank=True)
 	def __str__(self):
 		t=str(self.id)
 		return t
@@ -40,10 +40,10 @@ class answer(models.Model):
 	ans_id=models.IntegerField()
 	answer_detail=models.CharField(max_length=5000)
 	validity=models.IntegerField()
-#	answered_by=models.CharField(max_length=100)
-	#asked_on=models.DateField(auto_now=True, auto_now_add=False)
-	upvotes=models.IntegerField()
-	downvotes=models.IntegerField()
+	answered_by=models.CharField(max_length=100, blank=True)
+	#asked_on=models.DateField(auto_now=True, auto_now_add=False,blank=True)
+	upvotes=models.IntegerField(blank=True)
+	downvotes=models.IntegerField(blank=True)
 	def __str__(self):
 		t=str(self.id)
 		return t
