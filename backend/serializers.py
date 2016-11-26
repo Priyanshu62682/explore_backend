@@ -13,3 +13,21 @@ class answerSerializer(serializers.ModelSerializer):
 	class Meta:
 		model= answer
 		fields= '__all__'
+
+class appuserSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model= appuser
+		fields= '__all__'
+
+class expertSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model= expertise_area
+		fields= '__all__'
+
+class interestSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model= area_of_interest
+		fields= '__all__'

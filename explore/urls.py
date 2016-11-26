@@ -20,12 +20,20 @@ from backend import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^answer/(?P<ans_no>[0-9]{1})/(?P<answer>[a-z]{5})/(?P<valid>[0-9]{1})/(?P<answeredby>[a-z]{5})/(?P<quw>[0-9]{1})/$', views.answerPost.as_view()),
+    url(r'^answerpost/(?P<ans_no>[0-9]+)/(?P<answer>[a-z]{5})/(?P<valid>[0-9]{1})/(?P<answeredby>[a-z]{5})/(?P<quw>[0-9]{1})/$', views.answerPost.as_view()),
     #url(r'^answer/', views.answerList.as_view()),
     #for questions--> /feed/<user-id>/    (questions related to areas of that user expert+intersted)
     url(r'^feed/(?P<id_input>[0-9]+)/$',views.questionList.as_view()),
     #for answers--> /answers/<question-id>/
-    url(r'^answers/(?P<question_id>[0-9]+)/$',views.answerList.as_view())
+    url(r'^answerslist/(?P<question_id>[0-9]+)/$',views.answerList.as_view()),
+    #for answer feed page(experts answers in that)
+    url(r'^answer_feed/(?P<id_input>[0-9]+)/$',views.question_answer_page.as_view()),
+    #register new user
+    url(r'^register/(?P<name>[a-z]+)/(?P<q_asked>[0-9]+)/(?P<q_answered>[0-9]+)/$',views.register.as_view()),
+    #update area of expertise
+    url(r'^expertise-area-register/(?P<user_id>[0-9]+)/(?P<city>[a-z]+)/$',views.expertise_area_register.as_view()),
+    #update area of interest
+    url(r'^interested-area-register/(?P<user_id>[0-9]+)/(?P<city>[a-z]+)/$',views.interested_area_register.as_view())
 ]
 
 #urlpatterns = format_suffix_patterns(urlpatterns)

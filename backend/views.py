@@ -10,7 +10,7 @@ from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from .models import answer
 from django.http import QueryDict
-from .serializers import questionSerializer,answerSerializer
+from .serializers import questionSerializer,answerSerializer,appuserSerializer,expertSerializer,interestSerializer
 
 # Create your views here.
 
@@ -23,6 +23,24 @@ class questionList(APIView):
 			if q:
 				serializer= questionSerializer(q,many=True)
 
+		cities=expertise_area.objects.select_related('user_id').filter(user_id=id_input)
+		
+		for city in cities:
+			q=question.objects.filter(location=city.city)
+			if q:
+				serializer= questionSerializer(q,many=True)
+		
+#		ques= question.objects.filter(location="Roorkee")
+		
+		return Response(serializer.data)
+
+	def post(self):
+		pass
+
+#API for all questions of expertise(Answer page)
+class question_answer_page(APIView):
+	def get(self,request,id_input):
+#		ques= question.objects.filter(asked_by=2)
 		cities=expertise_area.objects.select_related('user_id').filter(user_id=id_input)
 		
 		for city in cities:
@@ -68,7 +86,31 @@ class answerPost(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class register(generics.CreateAPIView):
+    model=appuser
+    serializer_class=appuserSerializer
+    def post(self, request,name,q_asked,q_answered):
+        serializer=appuserSerializer(data=QueryDict('name='+name+'&q_asked='+q_asked+'&q_answered='+q_answered,mutable=True))
+        if serializer.is_valid():		
+            serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+class expertise_area_register(generics.CreateAPIView):
+    model=expertise_area
+    serializer_class=expertSerializer
+    def post(self, request,user_id,city):
+        serializer=expertSerializer(data=QueryDict('user_id='+user_id+'&city='+city,mutable=True))
+        if serializer.is_valid():		
+            serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+class interested_area_register(generics.CreateAPIView):
+    model=area_of_interest
+    serializer_class=expertSerializer
+    def post(self, request,user_id,city):
+        serializer=interestSerializer(data=QueryDict('user_id='+user_id+'&city='+city,mutable=True))
+        if serializer.is_valid():		
+            serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 		

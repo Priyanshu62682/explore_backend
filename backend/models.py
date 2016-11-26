@@ -5,10 +5,20 @@ from django.db import models
 # Create your models here.
 class appuser(models.Model):
 	name=models.CharField(max_length=50)
-	q_asked=models.IntegerField()
-	q_answered=models.IntegerField()
+#	q_asked=models.IntegerField()
+#	q_answered=models.IntegerField()
 	def __str__(self):
 		return self.name
+
+class who_answered_what(models.Model):
+	user_id=models.IntegerField()
+	q_answered=models.IntegerField()
+
+class who_asked_what(models.Model):
+	"""docstring for who_asked_what"""
+	user_id=models.IntegerField()
+	q_asked=models.IntegerField()
+		
 
 class expertise_area(models.Model):
 	user_id=models.ForeignKey(appuser, on_delete=models.CASCADE)
