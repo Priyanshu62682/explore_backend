@@ -20,7 +20,7 @@ from backend import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^answerpost/(?P<ans_no>[0-9]+)/(?P<answer>[a-z]{5})/(?P<valid>[0-9]{1})/(?P<answeredby>[a-z]{5})/(?P<quw>[0-9]{1})/$', views.answerPost.as_view()),
+#    url(r'^answerpost/(?P<ans_no>[0-9]+)/(?P<answer>[a-z]{5})/(?P<valid>[0-9]{1})/(?P<answeredby>[a-z]{5})/(?P<quw>[0-9]{1})/$', views.answerPost.as_view()),
     #url(r'^answer/', views.answerList.as_view()),
     #for questions--> /feed/<user-id>/    (questions related to areas of that user expert+intersted)
     url(r'^feed/(?P<id_input>[0-9]+)/$',views.questionList.as_view()),
@@ -29,11 +29,20 @@ urlpatterns = [
     #for answer feed page(experts answers in that)
     url(r'^answer_feed/(?P<id_input>[0-9]+)/$',views.question_answer_page.as_view()),
     #register new user
-    url(r'^register/(?P<name>[a-z]+)/(?P<q_asked>[0-9]+)/(?P<q_answered>[0-9]+)/$',views.register.as_view()),
+    url(r'^register/(?P<name>[a-z]+)/(?P<city>[a-z]+)/$',views.register.as_view()),
     #update area of expertise
     url(r'^expertise-area-register/(?P<user_id>[0-9]+)/(?P<city>[a-z]+)/$',views.expertise_area_register.as_view()),
     #update area of interest
-    url(r'^interested-area-register/(?P<user_id>[0-9]+)/(?P<city>[a-z]+)/$',views.interested_area_register.as_view())
+    url(r'^interested-area-register/(?P<user_id>[0-9]+)/(?P<city>[a-z]+)/$',views.interested_area_register.as_view()),
+    url(r'^answerpost/(?P<answer>[a-z]+)/(?P<quw>[0-9]+)/(?P<usr_id>[0-9]+)/$', views.answerPost.as_view()),
+#    url(r'^feed/(?P<id_input>[0-9]+)/$',views.questionList.as_view()),
+#    url(r'^answerlist/(?P<question_id>[0-9]+)/$',views.answerList.as_view()),
+    url(r'^questionpost/(?P<usr_id>[0-9]+)/(?P<que_detail>[a-z]+)/(?P<loc>[a-z]+)/$',views.questionPost.as_view()),
+    url(r'^questionlike/(?P<usr_id>[0-9]+)/(?P<que_id>[0-9]+)/$',views.question_vote_upvote.as_view()),
+    url(r'^questiondislike/(?P<usr_id>[0-9]+)/(?P<que_id>[0-9]+)/$',views.question_vote_downvote.as_view()),
+    url(r'^answerlike/(?P<usr_id>[0-9]+)/(?P<que_id>[0-9]+)/$',views.answer_vote_upvote.as_view()),
+    url(r'^answerdislike/(?P<usr_id>[0-9]+)/(?P<que_id>[0-9]+)/$',views.answer_vote_downvote.as_view())
+
 ]
 
 #urlpatterns = format_suffix_patterns(urlpatterns)

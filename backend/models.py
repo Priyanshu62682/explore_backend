@@ -47,7 +47,7 @@ class question(models.Model):
 
 class answer(models.Model):
 	q_id=models.ForeignKey(question, on_delete=models.CASCADE)
-	ans_id=models.IntegerField()
+	#ans_id=models.IntegerField()
 	answer_detail=models.CharField(max_length=5000)
 	validity=models.IntegerField()
 	answered_by=models.CharField(max_length=100, blank=True)
