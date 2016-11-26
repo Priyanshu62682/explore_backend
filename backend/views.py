@@ -48,16 +48,22 @@ class answerList(APIView):
 		pass
 
 #view for the answers
-class answerpost(generics.CreateAPIView):
+
+class answerPost(generics.CreateAPIView):
     model=answer
     queryset= answer.objects.all()
     serializer_class=answerSerializer
     def post(self, request,ans_no,answer,valid,answeredby,quw):
-        ques= question.objects.get(id=2)
+        ques= question.objects.get(id=1)
         #queryset=answer(ans_id=ans_no,answer_detail=answer,validity=valid,answered_by=answeredby,q_id=ques)
-        serializer=answerSerializer(data=QueryDict('ans_id='+ans_no+'&answer_detail='+answer+'&validity='+valid+'&answered_by=bishnu&q_id=2',mutable=True))
+        abc="bishnu"
+        bb="9"
+        cc="9"
+        serializer=answerSerializer(data=QueryDict('ans_id='+ans_no+'&answer_detail='+answer+'&validity='+valid+'&answered_by='+abc+'&q_id=1&upvotes='+bb+'&downvotes='+cc,mutable=True))
         #serializer.save()
-        if serializer.is_valid():			
+        print("here")
+        if serializer.is_valid():
+            print("okk")			
             serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
