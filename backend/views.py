@@ -71,10 +71,10 @@ class answerPost(generics.CreateAPIView):
     model=answer
     queryset= answer.objects.all()
     serializer_class=answerSerializer
-    def post(self, request,answer,quw,usr_id,user_name):
+    def post(self, request,answer,quw,usr_id):
         ques= appuser.objects.get(id=usr_id)
         abc=ques.name
-        serializer=answerSerializer(data=QueryDict('&answer_detail='+answer+'&validity=0&answered_by='+abc+'&q_id='+quw+'&upvotes=0&downvotes=0',mutable=True))
+        serializer=answerSerializer(data=QueryDict('q_id='+quw+'&answer_detail='+answer+'&validity=0&answered_by='+abc+'&upvotes=0&downvotes=0',mutable=True))
         if serializer.is_valid():		
             serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -101,7 +101,9 @@ class questionPost(generics.CreateAPIView):
     model=question
     serializer_class=questionSerializer
     def post(self,request,usr_id,que_detail,loc):
-        serializer=questionSerializer(data=QueryDict('q_detail='+que_detail+'&status=0&location='+loc+'&upvotes=0&downvotes=0',mutable =True))
+        user=appuser.objects.get(id=usr_id)
+        username=user.name
+        serializer=questionSerializer(data=QueryDict('q_detail='+que_detail+'&asked_by='+username+'&status=0&location='+loc+'&upvotes=0&downvotes=0',mutable =True))
         if serializer.is_valid():
             print("okk")			
             serializer.save()
