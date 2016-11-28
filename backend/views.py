@@ -71,20 +71,18 @@ class answerPost(generics.CreateAPIView):
     model=answer
     queryset= answer.objects.all()
     serializer_class=answerSerializer
-    def post(self, request,answer,quw,usr_id):
+    def post(self, request,answer,quw,usr_id,user_name):
         ques= appuser.objects.get(id=usr_id)
         abc=ques.name
         serializer=answerSerializer(data=QueryDict('&answer_detail='+answer+'&validity=0&answered_by='+abc+'&q_id='+quw+'&upvotes=0&downvotes=0',mutable=True))
-        print("here")
-        if serializer.is_valid():
-            print("okk")			
+        if serializer.is_valid():		
             serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class register(generics.CreateAPIView):
     model=appuser
     serializer_class=appuserSerializer
-    def post(self, request,name):
+    def post(self, request,name,city):
         serializer=appuserSerializer(data=QueryDict('name='+name,mutable=True))
         if serializer.is_valid():		
             serializer.save()
