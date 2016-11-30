@@ -1,16 +1,16 @@
 from django.shortcuts import render
-from .models import appuser,question,answer,area_of_interest,expertise_area
+from .models import appuser,question,answer,area_of_interest,expertise_area,who_asked_what,who_answered_what
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import questionSerializer, answerSerializer
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
-from .models import answer
 from django.http import QueryDict
-from .serializers import questionSerializer,answerSerializer,appuserSerializer,expertSerializer,interestSerializer
+from .serializers import questionSerializer,answerSerializer,appuserSerializer,expertSerializer,interestSerializer,w_asked_wSerializer
+from django.db.models import Max
+
 
 # Create your views here.
 
@@ -19,14 +19,14 @@ class questionList(APIView):
 #		ques= question.objects.filter(asked_by=2)
 		cities=area_of_interest.objects.select_related('user_id').filter(user_id=id_input)
 		for city in cities:
-			q=question.objects.filter(location=city.city)
+			q=question.objects.filter(location=city.city).order_by('-id')
 			if q:
 				serializer= questionSerializer(q,many=True)
 
 		cities=expertise_area.objects.select_related('user_id').filter(user_id=id_input)
 		
 		for city in cities:
-			q=question.objects.filter(location=city.city)
+			q=question.objects.filter(location=city.city).order_by('-id')
 			if q:
 				serializer= questionSerializer(q,many=True)
 		
@@ -44,7 +44,7 @@ class question_answer_page(APIView):
 		cities=expertise_area.objects.select_related('user_id').filter(user_id=id_input)
 		
 		for city in cities:
-			q=question.objects.filter(location=city.city)
+			q=question.objects.filter(location=city.city).order_by('-id')
 			if q:
 				serializer= questionSerializer(q,many=True)
 		
@@ -58,7 +58,7 @@ class question_answer_page(APIView):
 
 class answerList(APIView):
 	def get(self,request,question_id):
-		ans=answer.objects.select_related('q_id').filter(q_id=question_id)
+		ans=answer.objects.select_related('q_id').filter(q_id=question_id).order_by('-upvotes')
 		serializer= answerSerializer(ans,many=True)
 		return Response(serializer.data)
 
@@ -77,6 +77,8 @@ class answerPost(generics.CreateAPIView):
         serializer=answerSerializer(data=QueryDict('q_id='+quw+'&answer_detail='+answer+'&validity=0&answered_by='+abc+'&upvotes=0&downvotes=0',mutable=True))
         if serializer.is_valid():		
             serializer.save()
+        get_ques=question.objects.get(id=quw)
+        get_ques.status=1
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class register(generics.CreateAPIView):
@@ -101,13 +103,22 @@ class questionPost(generics.CreateAPIView):
     model=question
     serializer_class=questionSerializer
     def post(self,request,usr_id,que_detail,loc):
-        user=appuser.objects.get(id=usr_id)
-        username=user.name
-        serializer=questionSerializer(data=QueryDict('q_detail='+que_detail+'&asked_by='+username+'&status=0&location='+loc+'&upvotes=0&downvotes=0',mutable =True))
-        if serializer.is_valid():
-            print("okk")			
-            serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if request.method =='POST':
+            user=appuser.objects.get(id=usr_id)
+            username=user.name
+            serializer=questionSerializer(data=QueryDict('q_detail='+que_detail+'&asked_by='+username+'&status=0&location='+loc+'&upvotes=0&downvotes=0',mutable =True))
+            if serializer.is_valid():			
+                serializer.save()
+            idbc="null"
+            print(serializer.data)
+            print(serializer.data['id'])
+            idbc=serializer.data['id']
+            bcidbc=str(idbc)
+            print(bcidbc)
+            next_serializer=w_asked_wSerializer(data=QueryDict('user_id='+usr_id+'&q_asked='+bcidbc,mutable =True))
+            if next_serializer.is_valid():
+                next_serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class question_vote_upvote(generics.CreateAPIView):
     model=question
@@ -118,7 +129,6 @@ class question_vote_upvote(generics.CreateAPIView):
         local.upvotes=local.upvotes+1
         local.save()
         return Response(status=status.HTTP_201_CREATED)
-
 class question_vote_downvote(generics.CreateAPIView):
     model=question
     serializer_class=questionSerializer
@@ -156,4 +166,39 @@ class interested_area_register(generics.CreateAPIView):
             serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-		
+class add_city(generics.CreateAPIView):
+    model=area_of_interest
+    serializer_class=expertSerializer
+    def post(self, request,user_id,expert_in,interested_in):
+        flag=0;
+        if(interested_in=="null"):
+            serializer=interestSerializer(data=QueryDict('user_id='+user_id+'&city='+expert_in,mutable=True))
+            flag=1;
+            print("in 1");
+        elif(expert_in=="null"):
+            serializer=expertSerializer(data=QueryDict('user_id='+user_id+'&city='+interested_in,mutable=True))
+            flag=1;
+            print("in 2");
+        else:
+            serializer=interestSerializer(data=QueryDict('user_id='+user_id+'&city='+expert_in,mutable=True))
+            if serializer.is_valid():       
+                serializer.save()
+            serializer=expertSerializer(data=QueryDict('user_id='+user_id+'&city='+interested_in,mutable=True))
+            if serializer.is_valid():       
+                serializer.save()
+                print("in 3");
+        if(flag==1):
+            if serializer.is_valid():       
+                serializer.save()
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+class notify_ques(APIView):
+    def get(self,request,user_id):
+#        question_rec=question.objects.get(id=ques_id)
+#        question_rec.status=2;
+        ques=question.objects.raw('SELECT * FROM backend_question INNER JOIN backend_who_asked_what ON backend_question.id=backend_who_asked_what.q_asked WHERE backend_who_asked_what.user_id=9 AND backend_question.status=0 ')
+        for q in ques:
+            q.status=1
+        serializer= questionSerializer(ques,many=True)
+        return Response(serializer.data)
