@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import appuser,area_of_interest,expertise_area,question,answer
+from .models import appuser,area_of_interest,expertise_area,question,answer,who_asked_what,who_answered_what
 
 
 class questionSerializer(serializers.ModelSerializer):
@@ -31,3 +31,8 @@ class interestSerializer(serializers.ModelSerializer):
 	class Meta:
 		model= area_of_interest
 		fields= '__all__'
+
+class w_asked_wSerializer(serializers.ModelSerializer):
+	class Meta:
+		model=who_asked_what
+		fields='__all__'
