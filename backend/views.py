@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import appuser,question,answer,area_of_interest,expertise_area,who_asked_what,who_answered_what
+from .models import appuser,question,answer,area_of_interest,expertise_area,who_asked_what,who_answered_what,q_like,a_like,q_dislike,a_dislike
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import generics
@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 from django.http import QueryDict
-from .serializers import questionSerializer,answerSerializer,appuserSerializer,expertSerializer,interestSerializer,w_asked_wSerializer
+from .serializers import questionSerializer,answerSerializer,appuserSerializer,expertSerializer,interestSerializer,w_asked_wSerializer,q_likeSerializer,a_likeSerializer,q_dislikeSerializer,a_dislikeSerializer
 from django.db.models import Max
 
 
@@ -122,39 +122,102 @@ class questionPost(generics.CreateAPIView):
 
 class question_vote_upvote(generics.CreateAPIView):
     model=question
-    serializer_class=questionSerializer
+    serializer_class=q_likeSerializer
     def get(self,request,usr_id,que_id):
         local=question.objects.get(id=que_id)
-        
-        local.upvotes=local.upvotes+1
-        local.save()
-        return Response(status=status.HTTP_201_CREATED)
+        try :
+            abc=q_like.objects.filter(q_id=que_id)
+        except q_like.DoesNotExist:
+            abc=None
+        flag=0
+        for x in abc:
+           if x.user_id==usr_id:
+               flag=1
+        print(flag)
+        if flag==0:
+            print("okk")
+            local.upvotes=local.upvotes+1
+            local.save()
+            next_serializer=q_likeSerializer(data=QueryDict('user_id='+usr_id+'&q_id='+que_id,mutable =True))
+            if next_serializer.is_valid():
+                next_serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_304_NOT_MODIFIED)
 class question_vote_downvote(generics.CreateAPIView):
     model=question
-    serializer_class=questionSerializer
+    serializer_class=q_dislikeSerializer
     def get(self,request,usr_id,que_id):
         local=question.objects.get(id=que_id)
-        local.downvotes=local.downvotes+1
-        local.save()
-        return Response(status=status.HTTP_201_CREATED)
+        try :
+            abc=q_dislike.objects.filter(q_id=que_id)
+        except q_dislike.DoesNotExist:
+            abc=None
+        flag=0
+        for x in abc:
+           if x.user_id==usr_id:
+               flag=1
+        print(flag)
+        if flag==0:
+            print("okk")
+            local.downvotes=local.downvotes+1
+            local.save()
+            next_serializer=q_dislikeSerializer(data=QueryDict('user_id='+usr_id+'&q_id='+que_id,mutable =True))
+            if next_serializer.is_valid():
+                next_serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_304_NOT_MODIFIED)
 
 class answer_vote_upvote(generics.CreateAPIView):
     model=answer
-    serializer_class=answerSerializer
+    serializer_class=a_likeSerializer
     def get(self,request,usr_id,que_id):
         local=answer.objects.get(id=que_id)
-        local.upvotes=local.upvotes+1
-        local.save()
-        return Response(status=status.HTTP_201_CREATED)
+        try :
+            abc=a_like.objects.filter(a_id=que_id)
+        except a_like.DoesNotExist:
+            abc=None
+        flag=0
+        for x in abc:
+           if x.user_id==usr_id:
+               flag=1
+        print(flag)
+        if flag==0:
+            print("okk")
+            local.upvotes=local.upvotes+1
+            local.save()
+            next_serializer=a_likeSerializer(data=QueryDict('user_id='+usr_id+'&a_id='+que_id,mutable =True))
+            if next_serializer.is_valid():
+                next_serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_201_CREATED)
 
 class answer_vote_downvote(generics.CreateAPIView):
     model=answer
-    serializer_class=answerSerializer
+    serializer_class=a_dislikeSerializer
     def get(self,request,usr_id,que_id):
         local=answer.objects.get(id=que_id)
-        local.downvotes=local.downvotes+1
-        local.save()
-        return Response(status=status.HTTP_201_CREATED)
+        try :
+            abc=a_dislike.objects.filter(a_id=que_id)
+        except a_dislike.DoesNotExist:
+            abc=None
+        flag=0
+        for x in abc:
+           if x.user_id==usr_id:
+               flag=1
+        print(flag)
+        if flag==0:
+            print("okk")
+            local.downvotes=local.downvotes+1
+            local.save()
+            next_serializer=q_dislikeSerializer(data=QueryDict('user_id='+usr_id+'&a_id='+que_id,mutable =True))
+            if next_serializer.is_valid():
+                next_serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_201_CREATED)
       
 
 class interested_area_register(generics.CreateAPIView):
