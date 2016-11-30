@@ -114,6 +114,7 @@ class question_vote_upvote(generics.CreateAPIView):
     serializer_class=questionSerializer
     def get(self,request,usr_id,que_id):
         local=question.objects.get(id=que_id)
+        
         local.upvotes=local.upvotes+1
         local.save()
         return Response(status=status.HTTP_201_CREATED)
