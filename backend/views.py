@@ -193,13 +193,11 @@ class add_city(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
             
 class notify_ques(APIView):
-    model=who_asked_what
     def get(self,request,user_id):
 #        question_rec=question.objects.get(id=ques_id)
 #        question_rec.status=2;
-        ques=who_asked_what.objects.filter(id=user_id)
+        ques=question.objects.raw('SELECT * FROM backend_question INNER JOIN backend_who_asked_what ON backend_question.id=backend_who_asked_what.q_asked WHERE backend_who_asked_what.user_id=9 AND backend_question.status=0 ')
         for q in ques:
-            qq=question.objects.get(id=q.q_asked)
-        finalques=ques.filter(status=1)
-        serializer= questionSerializer(finalques,many=True)
+            q.status=1
+        serializer= questionSerializer(ques,many=True)
         return Response(serializer.data)
